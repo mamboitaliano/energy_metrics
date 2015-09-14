@@ -43,11 +43,51 @@ router.route('/')
 	})
 	.post(function(req, res) {
 		// Gets the values from a post request. This can be done through forms or REST calls. They rely on the "name" attribute for forms
-		var brand_name = req.body.brand_name;
-		var model_name = req.body.model_name;
-		var model_number = req.body.model_number;
-		var type = req.body.type;
-		var gallons_per_cycle = req.body.gallons_per_cycle;
-		var energy_factor = req.body.energy_factor;
-		var kwh_per_year = req.body.kwh_per_year;
-	})
+		var b_name = req.body.brand_name;
+		var m_name = req.body.model_name;
+		var m_number = req.body.model_number;
+		var m_type = req.body.type;
+		var m_gpc = req.body.gallons_per_cycle;
+		var m_ef = req.body.energy_factor;
+		var m_kpy = req.body.kwh_per_year;
+
+		// this is where we tell mongoose to create the model and assign the above variables to the respective db fields
+		mongoose.model('Dishwasher').create( {
+			brand_name: b_name;
+			model_name: m_name;
+			model_number: m_number;
+			type: m_type;
+			gallons_per_cycle: m_gpc;
+			energy_factor: m_ef;
+			kwh_per_year: m_kpy;
+		}, function(err, dishwasher) {
+			// if response not valid, handle error
+			if (err) {
+				res.send("Couldn't add record to the database");
+			}
+			// if response is valid, create a dishwasher entry
+			else {
+				console.log('POST successful. dishwasher entry created: ' + dishwasher);
+				res.format( {
+					// make HTML response set location and redirect back to home page
+					html: function() {
+						// if success, set header so address bar doesn't still say /add
+						res.location('dishwashers');
+						res.redirect('/dishwashers');
+					},
+					// handle json
+					json: function() {
+						res.json(dishwasher);
+					}
+				});
+			}
+		})
+	});
+
+// GET a new Dishwasher page
+router.get('/new', function(req, res) {
+	res.render('dishwashers/new', { title: 'Add new dishwasher' });
+});
+
+
+
