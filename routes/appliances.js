@@ -217,6 +217,42 @@ router.put('/:id/edit', function(req, res) {
 	});
 });
 
+// DELETE route to delete a dishwasher entry by ID
+router.delete('/:id/edit', function(req, res) {
+	// find dishwasher by id
+	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+		if(err) {
+			// if there's an error, print it to the console
+			return console.error(err); 
+		}
+		else {
+			// delete it from the Mongo database
+			dishwasher.remove(function(err, dishwasher) {
+				if(err) {
+					return console.error(err);
+				}
+				else {
+					// return a successful deletion message \
+					console.log('Removing dishwasher with ID ' + dishwasher._id);
+					// respond by redirecting back to the dishwashers page
+					res.format({
+						// handle HTML response
+						html: function() {
+							res.redirect('/dishwashers');
+						}
+						json: function() {
+							res.json( {message : 'deleted', item : dishwasher} );
+						}
+					});
+				}
+			});
+		}
+	});
+});
+
+
+// time to export the routes
+module.exports = router;
 
 
 
