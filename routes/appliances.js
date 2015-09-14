@@ -89,5 +89,89 @@ router.get('/new', function(req, res) {
 	res.render('dishwashers/new', { title: 'Add new dishwasher' });
 });
 
+// Route middleware to validate :id
+router.param('id', function(req, res, next, id) {
+	// console.log('making sure that ' + id + ' exists');
+	// this finds the ID in the mongo database
+	mongoose.model('Dishwasher').findById(id, function(err, dishwasher) {
+		// if no dishwasher found for this id, respond with the ol'404
+		if (err) {
+			console.log(id + ' not found');
+			// set the response status to 404
+			res.status(404);
+			var err = new Error('Not Found');
+			err.status = 404;
+			res.format({
+				// handle html
+				html: function() {
+					next(err);
+				},
+				// handle json
+				json: function() {
+					res.json({message : err.status + ' ' + err});
+				}
+			});
+		// if a dishwasher IS found for this id, continue
+		}
+		else {
+			// uncomment this next line if you want to see every JSON document response for every GET/PUT/DELETE call
+            // console.log(blob);
+            // once validation is complete, save the new item in the request
+			req.id = id;
+			// on to the next one
+			next();
+		}
+	});
+});
+
+// GET an individual dishwasher item by ID in order to display it
+router.route('/:id').get(function(req, res) {
+	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+		if (err) {
+			console.log("GET error while retrieving " + err);
+		}
+		else {
+			console.log("GET retrieving ID: " + dishwasher._id);
+			res.format({
+				// handle HTML
+				html: function() {
+					res.render('dishwashers/show', {"dishwasher" : dishwasher });
+				},
+				// handle JSON
+				json: function() {
+					res.json(dishwasher);
+				}
+			});
+		}
+	});
+});
+
+// route to edit/update document through standard web form
+router.route('/:id/edit', function(req, res) {
+	// search for the dishwasher entry within mongodb
+	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+		if (err) {
+			// handle error
+			console.log('GET error while retrieving ' + err);
+		}
+		else {
+			// return the dishwasher
+			console.log('GET retrieved ID ' + dishwasher._id);
+			res.format({
+				// handle HTML response to render 'edit.jade'
+				html: function() {
+					res.render('dishwashers/edit', { title: 'Dishwasher' + dishwasher._id, "dishwasher" : dishwasher });
+				},
+				// handle JSON response by returning JSON output
+				json: function() {
+					res.json(dishwasher);
+				}
+			});
+		}
+	});
+});
+
+
+
 
 
