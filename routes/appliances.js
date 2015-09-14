@@ -147,6 +147,7 @@ router.route('/:id').get(function(req, res) {
 });
 
 // route to edit/update document through standard web form
+// GET the individual dishwasher by mongo ID
 router.route('/:id/edit', function(req, res) {
 	// search for the dishwasher entry within mongodb
 	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
@@ -168,6 +169,51 @@ router.route('/:id/edit', function(req, res) {
 				}
 			});
 		}
+	});
+});
+
+// PUT route to update a dishwasher by ID
+router.put('/:id/edit', function(req, res) {
+	// Get our REST or form values. These rely on the "name" attributes
+	var b_name = req.body.brand_name;
+	var m_name = req.body.model_name;
+	var m_number = req.body.model_number;
+	var m_type = req.body.type;
+	var m_gpc = req.body.gallons_per_cycle;
+	var m_ef = req.body.energy_factor;
+	var m_kpy = req.body.kwh_per_year;
+
+	// find the doc by its ID
+	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+		// update entry
+		dishwasher.update({
+			brand_name: b_name,
+			model_name: m_name,
+			model_number: m_number,
+			type: m_type,
+			gallons_per_cycle: m_gpc,
+			energy_factor: m_ef,
+			kwh_per_year: m_kpy
+		},
+		function(err, dishwasherID) {
+			if(err) {
+				// handle error
+				res.send("Couldn't update record: " + err);
+			}
+			else {
+				// respond by redirecting back to the page
+				res.format({
+					// handle HTML response
+					html: function() {
+						res.redirect("/dishwashers/" + dishwasher._id);
+					},
+					// handle JSON response
+					json: function() {
+						res.json(dishwasher);
+					}
+				});
+			}
+		})
 	});
 });
 
