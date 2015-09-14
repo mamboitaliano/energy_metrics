@@ -31,4 +31,4 @@ var dishwasherSchema = new mongoose.Schema({
 // 	resolution: String;
 // });
 
-mongoose.model('Dishwashers', dishwasherSchema);
+mongoose.model('Dishwasher', dishwasherSchema);
