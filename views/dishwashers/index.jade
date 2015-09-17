@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+	h1.
+		#{title}
+	ul
+		-each dishwasher, i in dishwashers
+			li
+				= dishwasher.brand_name
+				= dishwasher.model_name
+				= dishwasher.model_number
+				= dishwasher.type
+				= dishwasher.gallons_per_cycle
+				= dishwasher.energy_factor
+				= dishwasher.kwh_per_year
+				= dishwasher._id
+				form(action='/dishwashers/#{dishwasher._id}/edit',method='post',enctype='application/x-www-form-urlencoded')
+					input(type='hidden',value='DELETE',name='_method')
+				button(type='submit').
+					Delete
+			p
+				a(href='/dishwashers/#{dishwasher._id}/edit') Edit
+			p
+				a(href='/dishwashers/#{dishwasher._id') Show

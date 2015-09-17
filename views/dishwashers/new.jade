@@ -1,0 +1,29 @@
+extends ../layout
+
+
+
+block content
+	h1.
+		Add a dishwasher:
+
+	form#formAddDishwasher(name="add_dishwasher",method="post",action="/dishwashers")
+	p Brand name:
+		input#inputName(type="text",placeholder="e.g. Whirlpool",name="brand_name")
+	p Model name
+		input#inputModel(type="text",placeholder="e.g. QuiteClean",name="model_name")
+	p Model number
+		input#inputModelNo(type="text",placeholder="e.g. QX750-S",name="model_number")
+	p Type
+		input#inputType(type="text",placeholder="e.g. Countertop",name="type")
+	p Gallons per cycle
+		input#inputGpc(type="text",placeholder="e.g. 8",name="gallons_per_cycle")
+	p Energy factor
+		input#inputEf(type="text",placeholder="e.g. 25",name="energy_factor")
+	p Kilowatthours per year
+		input#inputKpy(type="text",placeholder="e.g. 1200",name="kwh_per_year")
+	p
+		button#btnSubmit(type="submit") submit
+
+	a(href='/dishwashers') back
+
+	

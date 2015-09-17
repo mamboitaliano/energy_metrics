@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 
 var dishwasherSchema = new mongoose.Schema({
-	brand_name: String;
-	model_name: String;
-	model_number: String;
-	type: String;
-	gallons_per_cycle: String;
-	energy_factor: String;
-	kwh_per_year: String;
+	brand_name: String,
+	model_name: String,
+	model_number: String,
+	type: String,
+	gallons_per_cycle: String,
+	energy_factor: String,
+	kwh_per_year: String
 });
 
 // var clotheswasherSchema = new mongoose.Schema({
