@@ -4,8 +4,9 @@ extends ../layout
 
 block content
 	h1.
-	#{title}
-		form#formAddDishwasher(name="add_dishwasher",method="post",action="/dishwashers")
+		Add a dishwasher:
+
+	form#formAddDishwasher(name="add_dishwasher",method="post",action="/dishwashers")
 	p Brand name:
 		input#inputName(type="text",placeholder="e.g. Whirlpool",name="brand_name")
 	p Model name
@@ -22,3 +23,7 @@ block content
 		input#inputKpy(type="text",placeholder="e.g. 1200",name="kwh_per_year")
 	p
 		button#btnSubmit(type="submit") submit
+
+	a(href='/dishwashers') back
+
+	
