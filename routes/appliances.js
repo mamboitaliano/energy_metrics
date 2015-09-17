@@ -1,5 +1,5 @@
 var express = require('express');
-var router = express.router();
+var router = express.Router();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
@@ -22,6 +22,7 @@ router.route('/')
 		// retrieve all 'dishwashers' from mongo
 		mongoose.model('Dishwasher').find({}, function(err, dishwashers) {
 			if (err) {
+				// console.log("W T F ---------------");
 				return console.error(err);
 			}
 			else {
@@ -53,14 +54,15 @@ router.route('/')
 
 		// this is where we tell mongoose to create the model and assign the above variables to the respective db fields
 		mongoose.model('Dishwasher').create( {
-			brand_name: b_name;
-			model_name: m_name;
-			model_number: m_number;
-			type: m_type;
-			gallons_per_cycle: m_gpc;
-			energy_factor: m_ef;
-			kwh_per_year: m_kpy;
-		}, function(err, dishwasher) {
+			brand_name: b_name,
+			model_name: m_name,
+			model_number: m_number,
+			type: m_type,
+			gallons_per_cycle: m_gpc,
+			energy_factor: m_ef,
+			kwh_per_year: m_kpy
+		}, 
+		function(err, dishwasher) {
 			// if response not valid, handle error
 			if (err) {
 				res.send("Couldn't add record to the database");
@@ -239,7 +241,7 @@ router.delete('/:id/edit', function(req, res) {
 						// handle HTML response
 						html: function() {
 							res.redirect('/dishwashers');
-						}
+						},
 						json: function() {
 							res.json( {message : 'deleted', item : dishwasher} );
 						}
