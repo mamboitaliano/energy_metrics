@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-
 var dishwasherSchema = new mongoose.Schema({
 	brand_name: String,
 	model_name: String,
@@ -9,6 +8,8 @@ var dishwasherSchema = new mongoose.Schema({
 	energy_factor: String,
 	kwh_per_year: String
 });
+
+mongoose.model('Dishwasher', dishwasherSchema);
 
 // var clotheswasherSchema = new mongoose.Schema({
 // 	brand_name: String;
@@ -30,5 +31,3 @@ var dishwasherSchema = new mongoose.Schema({
 // 	backlight_tech: String;
 // 	resolution: String;
 // });
-
-mongoose.model('Dishwasher', dishwasherSchema);

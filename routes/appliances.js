@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
-router.use(bodyParser.urlencoded( {extended: true} ));
+router.use(bodyParser.urlencoded( { extended: true }));
 router.use(methodOverride(function(req, res) {
 	if (req.body && typeof req.body === 'object' && '_method' in req.body) {
 		// look in urlencoded POST bodies and delete it
@@ -42,26 +42,27 @@ router.route('/')
 			}
 		});
 	})
+	// POST a new dishwasher
 	.post(function(req, res) {
 		// Gets the values from a post request. This can be done through forms or REST calls. They rely on the "name" attribute for forms
-		var b_name = req.body.brand_name;
-		var m_name = req.body.model_name;
-		var m_number = req.body.model_number;
-		var m_type = req.body.type;
-		var m_gpc = req.body.gallons_per_cycle;
-		var m_ef = req.body.energy_factor;
-		var m_kpy = req.body.kwh_per_year;
+		var b_name = req.body.b_name;
+		var m_name = req.body.m_name;
+		var m_number = req.body.m_number;
+		var m_type = req.body.m_type;
+		var gpc = req.body.gpc;
+		var ef = req.body.ef;
+		var kpy = req.body.kpy;
 
 		// this is where we tell mongoose to create the model and assign the above variables to the respective db fields
-		mongoose.model('Dishwasher').create( {
-			brand_name: b_name,
-			model_name: m_name,
-			model_number: m_number,
-			type: m_type,
-			gallons_per_cycle: m_gpc,
-			energy_factor: m_ef,
-			kwh_per_year: m_kpy
-		}, 
+		mongoose.model('Dishwasher').create({
+			brand_name : b_name,
+			model_name : m_name,
+			model_number : m_number,
+			type : m_type,
+			gallons_per_cycle : gpc,
+			energy_factor : ef,
+			kwh_per_year : kpy
+		},
 		function(err, dishwasher) {
 			// if response not valid, handle error
 			if (err) {
@@ -70,15 +71,16 @@ router.route('/')
 			// if response is valid, create a dishwasher entry
 			else {
 				console.log('POST successful. dishwasher entry created: ' + dishwasher);
-				res.format( {
+				res.format({
 					// make HTML response set location and redirect back to home page
-					html: function() {
+					html: function(){
 						// if success, set header so address bar doesn't still say /add
-						res.location('dishwashers');
-						res.redirect('/dishwashers');
+						res.location("dishwashers");
+						// then forward to success page
+						res.redirect("/dishwashers");
 					},
 					// handle json
-					json: function() {
+					json: function(){
 						res.json(dishwasher);
 					}
 				});
@@ -87,7 +89,7 @@ router.route('/')
 	});
 
 // GET a new Dishwasher page
-router.get('/new', function(req, res) {
+router.get('/new',  (req, res) {
 	res.render('dishwashers/new', { title: 'Add new dishwasher' });
 });
 
@@ -95,7 +97,7 @@ router.get('/new', function(req, res) {
 router.param('id', function(req, res, next, id) {
 	// console.log('making sure that ' + id + ' exists');
 	// this finds the ID in the mongo database
-	mongoose.model('Dishwasher').findById(id, function(err, dishwasher) {
+	mongoose.model('Dishwasher').findById(id, function (err, dishwasher) {
 		// if no dishwasher found for this id, respond with the ol'404
 		if (err) {
 			console.log(id + ' not found');
@@ -105,12 +107,12 @@ router.param('id', function(req, res, next, id) {
 			err.status = 404;
 			res.format({
 				// handle html
-				html: function() {
+				html: function(){
 					next(err);
 				},
 				// handle json
-				json: function() {
-					res.json({message : err.status + ' ' + err});
+				json: function(){
+					res.json( {message : err.status + ' ' + err} );
 				}
 			});
 		// if a dishwasher IS found for this id, continue
@@ -128,7 +130,7 @@ router.param('id', function(req, res, next, id) {
 
 // GET an individual dishwasher item by ID in order to display it
 router.route('/:id').get(function(req, res) {
-	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+	mongoose.model('Dishwasher').findById(req.id, function (err, dishwasher) {
 		if (err) {
 			console.log("GET error while retrieving " + err);
 		}
@@ -136,11 +138,11 @@ router.route('/:id').get(function(req, res) {
 			console.log("GET retrieving ID: " + dishwasher._id);
 			res.format({
 				// handle HTML
-				html: function() {
-					res.render('dishwashers/show', {"dishwasher" : dishwasher });
+				html: function(){
+					res.render('dishwashers/show', {"dishwasher" : dishwasher } );
 				},
 				// handle JSON
-				json: function() {
+				json: function(){
 					res.json(dishwasher);
 				}
 			});
@@ -150,9 +152,9 @@ router.route('/:id').get(function(req, res) {
 
 // route to edit/update document through standard web form
 // GET the individual dishwasher by mongo ID
-router.route('/:id/edit', function(req, res) {
+router.route('/:id/edit').get(function(req, res) {
 	// search for the dishwasher entry within mongodb
-	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+	mongoose.model('Dishwasher').findById(req.id, function (err, dishwasher) {
 		if (err) {
 			// handle error
 			console.log('GET error while retrieving ' + err);
@@ -172,10 +174,9 @@ router.route('/:id/edit', function(req, res) {
 			});
 		}
 	});
-});
-
+})
 // PUT route to update a dishwasher by ID
-router.put('/:id/edit', function(req, res) {
+.put(function(req, res) {
 	// Get our REST or form values. These rely on the "name" attributes
 	var b_name = req.body.brand_name;
 	var m_name = req.body.model_name;
@@ -189,13 +190,13 @@ router.put('/:id/edit', function(req, res) {
 	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
 		// update entry
 		dishwasher.update({
-			brand_name: b_name,
-			model_name: m_name,
-			model_number: m_number,
-			type: m_type,
-			gallons_per_cycle: m_gpc,
-			energy_factor: m_ef,
-			kwh_per_year: m_kpy
+			brand_name : b_name,
+			model_name : m_name,
+			model_number : m_number,
+			type : m_type,
+			gallons_per_cycle : m_gpc,
+			energy_factor : m_ef,
+			kwh_per_year : m_kpy
 		},
 		function(err, dishwasherID) {
 			if(err) {
@@ -217,12 +218,12 @@ router.put('/:id/edit', function(req, res) {
 			}
 		})
 	});
-});
+})
 
 // DELETE route to delete a dishwasher entry by ID
-router.delete('/:id/edit', function(req, res) {
+.delete(function(req, res){
 	// find dishwasher by id
-	mongoose.model('Dishwasher').findById(req.id, function(err, dishwasher) {
+	mongoose.model('Dishwasher').findById(req.id, function (err, dishwasher) {
 		if(err) {
 			// if there's an error, print it to the console
 			return console.error(err); 
@@ -239,11 +240,13 @@ router.delete('/:id/edit', function(req, res) {
 					// respond by redirecting back to the dishwashers page
 					res.format({
 						// handle HTML response
-						html: function() {
+						html: function(){
 							res.redirect('/dishwashers');
 						},
-						json: function() {
-							res.json( {message : 'deleted', item : dishwasher} );
+						json: function(){
+							res.json( {message : 'deleted', 
+								item : dishwasher
+							});
 						}
 					});
 				}
