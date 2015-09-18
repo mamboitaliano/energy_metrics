@@ -1,6 +1,6 @@
 block content
 	h1.
-		Dishwasher ID #{dishwasher._id}
+		Edit dishwasher with ID #{dishwasher._id}
 	form(action='/dishwashers/#{dishwasher._id}/edit',method='post',name='update_dishwasher',enctype='application/x-www-form-urlencoded')
 	p Brand name:
 		input#inputBrandName(type='text',value='#{dishwasher.brand_name}',name='brand_name')
