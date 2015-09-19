@@ -18,78 +18,146 @@ router.use(methodOverride(function(req, res) {
 // build POST route for creating new 'Dishwashers'
 
 router.route('/')
-	.get(function(req, res, next) {
-		// retrieve all 'dishwashers' from mongo
-		mongoose.model('Dishwasher').find({}, function(err, dishwashers) {
-			if (err) {
-				// console.log("W T F ---------------");
-				return console.error(err);
-			}
-			else {
-				// respond to both HTML and JSON
-				// JSON response requires 'Accept: application/json;' in Request Header
-				res.format({
-					// HTML response will render the index.jade file in the views/blobs folder. 
-					// We are also setting "dishwashers" to be an accessible variable in our jade view
-					html: function() {
-						res.render('dishwashers/index', { title: 'All dishwashers', "dishwashers" : dishwashers });
-					},
-					// JSON responses will show all dishwashers in JSON format
-					json: function() {
-						res.json(dishwashers);
-					}
-				});
-			}
-		});
-	})
-	// POST a new dishwasher
-	.post(function(req, res) {
-		// Gets the values from a post request. This can be done through forms or REST calls. They rely on the "name" attribute for forms
-		var b_name = req.body.b_name;
-		var m_name = req.body.m_name;
-		var m_number = req.body.m_number;
-		var m_type = req.body.m_type;
-		var gpc = req.body.gpc;
-		var ef = req.body.ef;
-		var kpy = req.body.kpy;
+    //GET all dishwashers
+    .get(function(req, res, next) {
+        //retrieve all dishwashers from Monogo
+        mongoose.model('Dishwasher').find({}, function (err, dishwashers) {
+              if (err) {
+                  return console.error(err);
+              } else {
+                  //respond to both HTML and JSON. JSON responses require 'Accept: application/json;' in the Request Header
+                  res.format({
+                      //HTML response will render the index.jade file in the views/dishwashers folder. We are also setting "dishwashers" to be an accessible variable in our jade view
+                    html: function(){
+                        res.render('dishwashers/index', {
+                              title: 'All my Dishwashers',
+                              "Dishwashers" : dishwashers
+                          });
+                    },
+                    //JSON response will show all dishwashers in JSON format
+                    json: function(){
+                        res.json(dishwashers);
+                    }
+                });
+              }     
+        });
+    })
+    //POST a new dishwasher
+    .post(function(req, res) {
+        // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
+        var brand_name = req.body.brand_name;
+		var model_name = req.body.model_name;
+		var model_number = req.body.model_number;
+		var type = req.body.type;
+		var gallons_per_cycle = req.body.gallons_per_cycle;
+		var energy_factor = req.body.energy_factor;
+		var kwh_per_year = req.body.kwh_per_year;
+        //call the create function for our database
+        mongoose.model('Dishwasher').create({
+            brand_name : brand_name,
+            model_name : model_name,
+            model_number : model_number,
+            type : type,
+            gallons_per_cycle: gallons_per_cycle,
+            energy_factor: energy_factor,
+            kwh_per_year: kwh_per_year
+        }, function (err, dishwasher) {
+              if (err) {
+                  res.send("There was a problem adding the information to the database.");
+              } else {
+                  //Dishwasher has been created
+                  console.log('POST creating new dishwasher: ' + dishwasher);
+                  res.format({
+                      //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
+                    html: function(){
+                        // If it worked, set the header so the address bar doesn't still say /adduser
+                        res.location("dishwashers");
+                        // And forward to success page
+                        res.redirect("/dishwashers");
+                    },
+                    //JSON response will show the newly created dishwasher
+                    json: function(){
+                        res.json(dishwasher);
+                    }
+                });
+              }
+        })
+    });
 
-		// this is where we tell mongoose to create the model and assign the above variables to the respective db fields
-		mongoose.model('Dishwasher').create({
-			brand_name : b_name,
-			model_name : m_name,
-			model_number : m_number,
-			type : m_type,
-			gallons_per_cycle : gpc,
-			energy_factor : ef,
-			kwh_per_year : kpy
-		},
-		function(err, dishwasher) {
-			// if response not valid, handle error
-			if (err) {
-				res.send("Couldn't add record to the database");
-			}
-			// if response is valid, create a dishwasher entry
-			else {
-				console.log('POST successful. dishwasher entry created: ' + dishwasher);
-				res.format({
-					// make HTML response set location and redirect back to home page
-					html: function(){
-						// if success, set header so address bar doesn't still say /add
-						res.location("dishwashers");
-						// then forward to success page
-						res.redirect("/dishwashers");
-					},
-					// handle json
-					json: function(){
-						res.json(dishwasher);
-					}
-				});
-			}
-		})
-	});
+
+
+// router.route('/')
+// 	.get(function(req, res, next) {
+// 		// retrieve all 'dishwashers' from mongo
+// 		mongoose.model('Dishwasher').find({}, function(err, dishwashers) {
+// 			if (err) {
+// 				// console.log("W T F ---------------");
+// 				return console.error(err);
+// 			}
+// 			else {
+// 				// respond to both HTML and JSON
+// 				// JSON response requires 'Accept: application/json;' in Request Header
+// 				res.format({
+// 					// HTML response will render the index.jade file in the views/dishwasher folder. 
+// 					// We are also setting "dishwashers" to be an accessible variable in our jade view
+// 					html: function() {
+// 						res.render('dishwashers/index', { title: 'All dishwashers', "dishwashers" : dishwashers });
+// 					},
+// 					// JSON responses will show all dishwashers in JSON format
+// 					json: function() {
+// 						res.json(dishwashers);
+// 					}
+// 				});
+// 			}
+// 		});
+// 	})
+// 	// POST a new dishwasher
+// 	.post(function(req, res) {
+// 		// Gets the values from a post request. This can be done through forms or REST calls. They rely on the "name" attribute for forms
+// 		var brand_name = req.body.brand_name;
+// 		var model_name = req.body.model_name;
+// 		var model_number = req.body.model_number;
+// 		var type = req.body.type;
+// 		var gallons_per_cycle = req.body.gallons_per_cycle;
+// 		var energy_factor = req.body.energy_factor;
+// 		var kwh_per_year = req.body.kwh_per_year;
+
+// 		// this is where we tell mongoose to create the model and assign the above variables to the respective db fields
+// 		mongoose.model('Dishwasher').create({
+// 			brand_name : brand_name,
+// 			model_name : model_name,
+// 			model_number : model_number,
+// 			type : type,
+// 			gallons_per_cycle : gallons_per_cycle,
+// 			energy_factor : energy_factor,
+// 			kwh_per_year : kwh_per_year
+// 		}, function(err, dishwasher) {
+// 			// if response not valid, handle error
+// 			if (err) {
+// 				res.send("Couldn't add record to the database");
+// 			}
+// 			// if response is valid, create a dishwasher entry
+// 			else {
+// 				console.log('POST successful. dishwasher entry created: ' + dishwasher);
+// 				res.format({
+// 					// make HTML response set location and redirect back to home page
+// 					html: function(){
+// 						// if success, set header so address bar doesn't still say /add
+// 						res.location("dishwashers");
+// 						// then forward to success page
+// 						res.redirect("/dishwashers");
+// 					},
+// 					// handle json
+// 					json: function(){
+// 						res.json(dishwasher);
+// 					}
+// 				});
+// 			}
+// 		})
+// 	});
 
 // GET a new Dishwasher page
-router.get('/new',  (req, res) {
+router.get('/new', function (req, res) {
 	res.render('dishwashers/new', { title: 'Add new dishwasher' });
 });
 
@@ -119,7 +187,7 @@ router.param('id', function(req, res, next, id) {
 		}
 		else {
 			// uncomment this next line if you want to see every JSON document response for every GET/PUT/DELETE call
-            // console.log(blob);
+            // console.log(dishwasher);
             // once validation is complete, save the new item in the request
 			req.id = id;
 			// on to the next one

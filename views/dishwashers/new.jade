@@ -1,11 +1,9 @@
 extends ../layout
 
-
-
 block content
 	h1.
 	#{title}
-		form#formAddDishwasher(name="add_dishwasher",method="post",action="/dishwashers")
+		form#formAddDishwasher(name="adddishwasher",method="post",action="/dishwashers")
 	p Brand name:
 		input#inputName(type="text",placeholder="e.g. Whirlpool",name="brand_name")
 	p Model name
