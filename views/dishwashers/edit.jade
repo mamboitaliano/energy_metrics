@@ -1,0 +1,23 @@
+block content
+	h1.
+		Edit dishwasher with ID #{dishwasher._id}
+	form(action='/dishwashers/#{dishwasher._id}/edit',method='post',name='update_dishwasher',enctype='application/x-www-form-urlencoded')
+	p Brand name:
+		input#inputBrandName(type='text',value='#{dishwasher.brand_name}',name='brand_name')
+	p Model name:
+		input#inputModelName(type='text',value='#{dishwasher.model_name}',name='model_name')
+	p Model number:
+		input#inputModelNumber(type='text',value='#{dishwasher.model_number}',name='model_number')
+	p Type
+		input#inputType(type='text',value='#{dishwasher.type}',name='type')
+	p Gallons per cycle
+		input#inputGpc(type='text',value='#{dishwasher.gallons_per_cycle},name='gallons_per_cycle')
+	p Energy factor
+		input#inputEnergyFactor(type='text',value='#{dishwasher.energy_factor}',name='energy_factor')
+	p Kwh per year
+		input#inputKwhPerYear(type='text',value='#{dishwasher.kwh_per_year}',name='kwh_per_year')
+	p
+		input(type='hidden',value='PUT',name='_method')
+	p
+		button#btnSubmit(type='submit').
+			Update
