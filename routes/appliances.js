@@ -31,7 +31,7 @@ router.route('/')
                     html: function(){
                         res.render('dishwashers/index', {
                               title: 'All my Dishwashers',
-                              "Dishwashers" : dishwashers
+                              "dishwashers" : dishwashers
                           });
                     },
                     //JSON response will show all dishwashers in JSON format
@@ -52,6 +52,7 @@ router.route('/')
 		var gallons_per_cycle = req.body.gallons_per_cycle;
 		var energy_factor = req.body.energy_factor;
 		var kwh_per_year = req.body.kwh_per_year;
+		console.log(req.body);
         //call the create function for our database
         mongoose.model('Dishwasher').create({
             brand_name : brand_name,
@@ -66,6 +67,7 @@ router.route('/')
                   res.send("There was a problem adding the information to the database.");
               } else {
                   //Dishwasher has been created
+                  console.log("dafuq");
                   console.log('POST creating new dishwasher: ' + dishwasher);
                   res.format({
                       //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
